@@ -1,4 +1,5 @@
 import * as os from 'os'
+import * as fs from 'fs'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import * as vslc from 'vscode-languageclient'
@@ -26,7 +27,12 @@ export function generatePipeName(pid: string, name: string) {
         return '\\\\.\\pipe\\' + name + '-' + pid
     }
     else {
-        return path.join(os.tmpdir(), name + '-' + pid)
+        const tmpFolder = path.join(os.homedir(), ".tmp");
+        // Ensure the temporary folder exists
+        if (!fs.existsSync(tmpFolder)) {
+            fs.mkdirSync(tmpFolder, { recursive: true});
+        }
+        return path.join(tmpFolder, name + '-' + pid)
     }
 }
 
